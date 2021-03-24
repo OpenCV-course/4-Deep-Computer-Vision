@@ -11,6 +11,9 @@
 10. [Normalizar el featureSet y convertir labels a clase binaria](#schema10)
 11. [Division de los datos para en entrenamiento](#schema11)
 12. [Image data generator ](#schema12)
+13. [Creando nuestro modelo](#schema13)
+14. [Entrenamos el modelo](#schema14)
+15. [Empezamos con testing](#schema15)
 
 <hr>
 
@@ -157,3 +160,59 @@ x_train, x_val, y_train, y_val = (np.array(item) for item in split_data)
 datagen = canaro.generators.imageDataGenerator()
 train_gen = datagen.flow(x_train, y_train, batch_size=BATCH_SIZE)
 ~~~
+
+<hr>
+
+<a name="schema13"></a>
+
+# 13. Creando nuestro modelo
+Usamos este modelo : https://github.com/jasmcaus/canaro/blob/master/canaro/models/simpsons.py
+~~~python
+model = canaro.models.createSimpsonsModel(IMG_SIZE=IMG_SIZE, channels=channels, output_dim=len(characters), 
+                                         loss='binary_crossentropy', decay=1e-7, learning_rate=0.001, momentum=0.9,
+                                         nesterov=True)
+~~~
+
+<hr>
+
+<a name="schema14"></a>
+
+# 14. Entrenamos el modelo
+~~~python
+from tensorflow.keras.callbacks import LearningRateScheduler
+callbacks_list = [LearningRateScheduler(canaro.lr_schedule)]
+training = model.fit(train_gen,
+                    steps_per_epoch=len(x_train)//BATCH_SIZE,
+                    epochs=EPOCHS,
+                    validation_data=(x_val,y_val),
+                    validation_steps=len(y_val)//BATCH_SIZE,
+                    callbacks = callbacks_list)
+~~~
+![img](./images/007.png)
+Viendo el valor de accuracy que no supera 0.3, esto va a fallara muchoooooooo
+<hr>
+
+<a name="schema15"></a>
+
+# 15. Empezamos con testing
+~~~python
+test_path ='/home/patricia/Documentos/opencv/deep-computer-vision/data/kaggle_simpson_testset/kaggle_simpson_testset/bart_simpson_0.jpg'
+img = cv.imread(test_path)
+
+plt.imshow(img)
+plt.show()
+~~~
+![img](./images/005.png)
+Creamos un a función que prepara la imagen
+~~~python
+def prepare(image):
+    image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    image = cv.resize(image, IMG_SIZE)
+    image = caer.reshape(image, IMG_SIZE, 1)
+    return image
+
+predictions = model.predict(prepare(img))
+
+print(characters[np.argmax(predictions[0])])
+~~~
+![img](./images/006.png)
