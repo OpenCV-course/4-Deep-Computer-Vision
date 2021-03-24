@@ -1,1 +1,68 @@
 # 4-Deep-Computer-Vision
+1. [Descargar data set ](#schema1)
+2. [Instalar caer y canaro ](#schema2)
+3. [Importar librerías ](#schema3)
+4. [Redimensionar todas las imágenes y tener en una variable el dataset a usar](#schema4)
+5. [Crear un diccionario con los personajes y ordenarlos de forma descendente](#schema5)
+
+<hr>
+
+<a name="schema1"></a>
+
+# 1. Descargar data set
+
+https://www.kaggle.com/alexattia/the-simpsons-characters-dataset
+
+
+<hr>
+
+<a name="schema2"></a>
+
+# 2. Insatalar caer y canaro
+
+
+
+Instalar:
+~~~
+pip install caer canaro
+~~~
+
+<hr>
+
+<a name="schema3"></a>
+
+# 3. Importar librerías
+
+~~~python
+import os
+import caer
+import canaro
+import numpy as np
+import cv2 as cv
+import gc
+import sklearn.model_selection as skm 
+~~~
+<hr>
+
+<a name="schema4"></a>
+
+# 4. Redimensionar todas las imágenes y tener en una variable el dataset a usar.
+
+~~~python
+IMG_SIZE = (80,80)
+channels = 1
+char_path = '/home/patricia/Documentos/opencv/deep-computer-vision/data/simpsons_dataset'
+~~~
+<hr>
+
+<a name="schema5"></a>
+
+# 5. Crear un diccionario con los personajes y ordenarlos de forma descendente
+~~~python
+char_dict = {}
+for char in os.listdir(char_path):
+    char_dict[char] = len(os.listdir(os.path.join(char_path,char)))
+
+char_dict = caer.sort_dict(char_dict, descending=True)
+~~~
+![img](./images/001.png)
